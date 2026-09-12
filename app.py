@@ -119,38 +119,38 @@ st.markdown("""
     .stDataFrame {
         font-size: 1.05rem !important;
     }
-    /* 사이드바 글자 크기 대폭 확대 */
+    /* 사이드바 글자 크기 최적화 (너무 크지 않고 깔끔한 폰트 크기) */
     [data-testid="stSidebar"] {
-        font-size: 1.15rem !important;
+        font-size: 0.95rem !important;
     }
     [data-testid="stSidebar"] .stMarkdown p {
-        font-size: 1.15rem !important;
-        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+        font-weight: 400 !important;
     }
     [data-testid="stSidebar"] label {
-        font-size: 1.2rem !important;
-        font-weight: 700 !important;
-        color: #1f2937 !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        color: #374151 !important;
     }
     [data-testid="stSidebar"] input, 
     [data-testid="stSidebar"] select, 
     [data-testid="stSidebar"] .stSelectbox div,
     [data-testid="stSidebar"] .stDateInput div {
-        font-size: 1.15rem !important;
+        font-size: 0.92rem !important;
     }
     [data-testid="stSidebar"] button {
-        font-size: 1.25rem !important;
-        font-weight: 800 !important;
-        padding: 0.6rem 1rem !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        padding: 0.5rem 0.8rem !important;
     }
     [data-testid="stSidebar"] h1, 
     [data-testid="stSidebar"] h2, 
     [data-testid="stSidebar"] h3 {
-        font-size: 1.5rem !important;
-        font-weight: 800 !important;
+        font-size: 1.15rem !important;
+        font-weight: 700 !important;
     }
     [data-testid="stSidebar"] .stCaption {
-        font-size: 1.0rem !important;
+        font-size: 0.85rem !important;
     }
 </style>
 """, unsafe_allow_html=True)
