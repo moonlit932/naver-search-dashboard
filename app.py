@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 from src.components.sidebar import render_sidebar
 from src.components.charts import (
     create_trend_line_chart, 
@@ -492,7 +494,6 @@ if data:
             st.plotly_chart(fig_w_box, use_container_width=True, key=f"cloud_eda_box_{selected_kw_cloud}")
 
         # 5번째 차트: 누적 점유율 파레토(Pareto) 라인+바 복합 차트
-        import plotly.graph_objects as go
         fig_pareto = go.Figure()
         fig_pareto.add_trace(go.Bar(
             x=top20_df["word"],
