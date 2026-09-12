@@ -11,39 +11,38 @@ def render_sidebar() -> Dict[str, Any]:
     st.sidebar.markdown("네이버 오픈 API(검색 8종 + 데이터랩) EDA")
     st.sidebar.divider()
 
-    # 1. API 인증 설정
-    default_client_id, default_client_secret = get_naver_credentials()
-    has_env = bool(default_client_id and default_client_secret)
+    # 1. API 인증 설정 (.env 기반 자동 로드)
+    client_id, client_secret = get_naver_credentials()
+    if not (client_id and client_secret):
+        st.sidebar.error("⚠️ `.env` 파일에 `NAVER_CLIENT_ID` 및 `NAVER_CLIENT_SECRET`을 설정해 주세요.")
 
-    with st.sidebar.expander("🔑 API 키 설정", expanded=not has_env):
-        if has_env:
-            st.success("`.env` 파일의 API 키가 로드되었습니다.")
-        else:
-            st.warning("`.env` 파일에 API 키가 없습니다. 아래에 직접 입력하세요.")
+    # 세션 상태에 과거 검색 히스토리 리스트 초기화
+    if "keyword_history" not in st.session_state:
+        st.session_state.keyword_history = ["아이폰16, 갤럭시S24", "생성형 AI, 챗GPT", "크루즈 여행, 패키지 여행"]
 
-        client_id_input = st.text_input(
-            "Client ID",
-            value=default_client_id,
-            type="password" if default_client_id else "default",
-            help="네이버 개발자센터에서 발급받은 Client ID"
-        )
-        client_secret_input = st.text_input(
-            "Client Secret",
-            value=default_client_secret,
-            type="password",
-            help="네이버 개발자센터에서 발급받은 Client Secret"
-        )
-        st.caption("[네이버 개발자센터 바로가기](https://developers.naver.com/apps/#/register)")
+    if "current_search_input" not in st.session_state:
+        st.session_state.current_search_input = "아이폰16, 갤럭시S24"
 
-    st.sidebar.divider()
-
-    # 2. 검색어 입력 (쉼표 구분)
+    # 2. 검색어 입력 및 과거 검색 기록 탭
     st.sidebar.subheader("📌 분석 검색어")
+
     raw_keywords = st.sidebar.text_input(
         "검색어 입력 (쉼표 `,` 로 구분)",
-        value="아이폰16, 갤럭시S24",
+        value=st.session_state.current_search_input,
+        key="search_input_widget",
         help="비교할 검색어를 쉼표로 구분하여 최대 5개까지 입력할 수 있습니다."
     )
+
+    # 과거 검색 기록 클릭 영역
+    st.sidebar.markdown("**🕒 과거 검색 기록** (클릭 시 자동 입력)")
+    
+    # 최근 검색어 칩/버튼 목록 렌더링
+    history_list = st.session_state.keyword_history[:5]
+    for hist_item in history_list:
+        if st.sidebar.button(f"🔍 {hist_item}", key=f"hist_btn_{hist_item}", use_container_width=True):
+            st.session_state.current_search_input = hist_item
+            st.rerun()
+
     keywords = [k.strip() for k in raw_keywords.split(",") if k.strip()]
     if len(keywords) > 5:
         st.sidebar.warning("데이터랩 API 제약으로 최대 5개 키워드까지만 비교됩니다.")
@@ -107,8 +106,9 @@ def render_sidebar() -> Dict[str, Any]:
     run_button = st.sidebar.button("🚀 인사이트 분석 시작", type="primary", use_container_width=True)
 
     return {
-        "client_id": client_id_input,
-        "client_secret": client_secret_input,
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "raw_keywords_str": raw_keywords,
         "keywords": keywords,
         "start_date": start_date.strftime("%Y-%m-%d"),
         "end_date": end_date.strftime("%Y-%m-%d"),
