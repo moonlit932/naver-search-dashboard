@@ -26,20 +26,22 @@ st.set_page_config(
 # 2. 화면 전체를 채우는 볼드하고 시원한 커스텀 스타일 (폰트/차트 확대)
 st.markdown("""
 <style>
-    /* 전체 여백 최적화 및 폰트 크기 확대 */
+    /* 전체 여백 최적화 및 폰트 크기 확대 (상단바 가림 방지 여백 확보) */
     .block-container {
-        padding-top: 1.5rem !important;
+        padding-top: 4.2rem !important;
         padding-bottom: 3rem !important;
         padding-left: 2.5rem !important;
         padding-right: 2.5rem !important;
         max-width: 98% !important;
     }
     .main-title {
-        font-size: 2.6rem !important;
+        font-size: 2.5rem !important;
         font-weight: 800;
         color: #03C75A;
         letter-spacing: -0.5px;
-        margin-bottom: 0.3rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.4rem;
+        line-height: 1.3;
     }
     .sub-title {
         color: #4b5563;
