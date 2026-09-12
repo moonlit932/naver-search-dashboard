@@ -177,6 +177,16 @@ if params["run_button"]:
         st.warning("⚠️ 쉼표로 구분된 최소 1개 이상의 검색어를 입력해 주세요.")
         st.stop()
 
+    # 검색어 히스토리 실시간 업데이트
+    raw_input_str = params.get("raw_keywords_str", "").strip()
+    if raw_input_str:
+        if "keyword_history" not in st.session_state:
+            st.session_state.keyword_history = []
+        if raw_input_str in st.session_state.keyword_history:
+            st.session_state.keyword_history.remove(raw_input_str)
+        st.session_state.keyword_history.insert(0, raw_input_str)
+        st.session_state.keyword_history = st.session_state.keyword_history[:8]
+
     client = NaverApiClient(params["client_id"], params["client_secret"])
     search_service = NaverSearchService(client)
     datalab_service = NaverDatalabService(client)
@@ -216,18 +226,6 @@ if params["run_button"]:
                 "channel_df": channel_df,
                 "words_df": words_df
             }
-            # 검색어 히스토리 업데이트
-            raw_input_str = params.get("raw_keywords_str", "").strip()
-            if raw_input_str:
-                if "keyword_history" not in st.session_state:
-                    st.session_state.keyword_history = []
-                # 중복 제거 후 맨 앞에 삽입
-                if raw_input_str in st.session_state.keyword_history:
-                    st.session_state.keyword_history.remove(raw_input_str)
-                st.session_state.keyword_history.insert(0, raw_input_str)
-                # 최대 8개까지 보관
-                st.session_state.keyword_history = st.session_state.keyword_history[:8]
-
             st.success("✅ 데이터 수집 및 분석이 완료되었습니다!")
 
         except Exception as e:

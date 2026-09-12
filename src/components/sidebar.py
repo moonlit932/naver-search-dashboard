@@ -20,15 +20,18 @@ def render_sidebar() -> Dict[str, Any]:
     if "keyword_history" not in st.session_state:
         st.session_state.keyword_history = ["아이폰16, 갤럭시S24", "생성형 AI, 챗GPT", "크루즈 여행, 패키지 여행"]
 
-    if "current_search_input" not in st.session_state:
-        st.session_state.current_search_input = "아이폰16, 갤럭시S24"
+    if "search_input_widget" not in st.session_state:
+        st.session_state.search_input_widget = "아이폰16, 갤럭시S24"
+
+    # 히스토리 버튼 클릭 시 실행할 콜백 함수
+    def set_search_keyword(kw_text: str):
+        st.session_state.search_input_widget = kw_text
 
     # 2. 검색어 입력 및 과거 검색 기록 탭
     st.sidebar.subheader("📌 분석 검색어")
 
     raw_keywords = st.sidebar.text_input(
         "검색어 입력 (쉼표 `,` 로 구분)",
-        value=st.session_state.current_search_input,
         key="search_input_widget",
         help="비교할 검색어를 쉼표로 구분하여 최대 5개까지 입력할 수 있습니다."
     )
@@ -37,11 +40,15 @@ def render_sidebar() -> Dict[str, Any]:
     st.sidebar.markdown("**🕒 과거 검색 기록** (클릭 시 자동 입력)")
     
     # 최근 검색어 칩/버튼 목록 렌더링
-    history_list = st.session_state.keyword_history[:5]
-    for hist_item in history_list:
-        if st.sidebar.button(f"🔍 {hist_item}", key=f"hist_btn_{hist_item}", use_container_width=True):
-            st.session_state.current_search_input = hist_item
-            st.rerun()
+    history_list = st.session_state.keyword_history[:6]
+    for idx, hist_item in enumerate(history_list):
+        st.sidebar.button(
+            f"🔍 {hist_item}", 
+            key=f"hist_btn_{idx}_{hist_item}", 
+            use_container_width=True,
+            on_click=set_search_keyword,
+            args=(hist_item,)
+        )
 
     keywords = [k.strip() for k in raw_keywords.split(",") if k.strip()]
     if len(keywords) > 5:
